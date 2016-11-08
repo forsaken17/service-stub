@@ -15,11 +15,14 @@ func main() {
 		fmt.Println("Error: ", err)
 	}
 	//	fmt.Println("listening on ", sConn.LocalAddr().String())
-	buf := make([]byte, 1024)
+	buf := make([]byte, 8192)
 	for {
 		n, err := sConn.Read(buf)
 
-		fmt.Println(check(buf[0:n]))
+		data := check(buf[0:n])
+		if data != "" {
+			fmt.Println(data)
+		}
 
 		if err != nil {
 			fmt.Println("Error: ", err)

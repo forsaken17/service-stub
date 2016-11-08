@@ -20,13 +20,17 @@ func check(testBytes []byte) string {
 		r, err = gzip.NewReader(b)
 	} else if testBytes[0] == 0x78 && testBytes[1] == 0x9c {
 		r, err = zlib.NewReader(b)
+	} else if testBytes[0] == 0x1e && testBytes[1] == 0x0f { // gelf chunk
+		return ``
 	} else {
+		return ``
 		r = ioutil.NopCloser(b)
 	}
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
 	defer r.Close()
+
 	out.ReadFrom(r)
 
 	return out.String()
