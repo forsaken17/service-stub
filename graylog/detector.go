@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-func check(testBytes []byte) string {
+func check(testBytes []byte) []byte {
 
 	b := bytes.NewBufferString(string(testBytes))
 	var r io.ReadCloser
@@ -21,9 +21,16 @@ func check(testBytes []byte) string {
 	} else if testBytes[0] == 0x78 && testBytes[1] == 0x9c {
 		r, err = zlib.NewReader(b)
 	} else if testBytes[0] == 0x1e && testBytes[1] == 0x0f { // gelf chunk
-		return ``
+		//		fmt.Printf("%x\n", testBytes)
+
+		//		c := make(chan []byte)
+		//		go worker(c)
+		//		c <- testBytes
+		//		go chunkPool(c)
+		//		out := fmt.Sprintf("%x", <-c)
+		return []byte{0xef}
 	} else {
-		return ``
+		return []byte("00")
 		r = ioutil.NopCloser(b)
 	}
 	if err != nil {
@@ -33,6 +40,20 @@ func check(testBytes []byte) string {
 
 	out.ReadFrom(r)
 
-	return out.String()
+	return out.Bytes()
 
 }
+
+func chunkPool(c chan []byte) {
+	msg := <-c
+	fmt.Println(msg)
+}
+
+//func worker(c chan []byte) {
+//	for {
+//		msg := <-c
+//		fmt.Println(msg)
+//		break
+//		//		time.Sleep(time.Second * 1)
+//	}
+//}
