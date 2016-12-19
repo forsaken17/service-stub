@@ -6,7 +6,6 @@ import (
 	"compress/zlib"
 	"fmt"
 	"io"
-	"io/ioutil"
 )
 
 func check(testBytes []byte) []byte {
@@ -21,18 +20,11 @@ func check(testBytes []byte) []byte {
 	} else if testBytes[0] == 0x78 && testBytes[1] == 0x9c {
 		r, err = zlib.NewReader(b)
 	} else if testBytes[0] == 0x1e && testBytes[1] == 0x0f { // gelf chunk
-		//		fmt.Printf("%x\n", testBytes)
-
-		//		c := make(chan []byte)
-		//		go worker(c)
-		//		c <- testBytes
-		//		go chunkPool(c)
-		//		out := fmt.Sprintf("%x", <-c)
 		return []byte{0xef}
 	} else {
-		return []byte("00")
-		r = ioutil.NopCloser(b)
+		return []byte{}
 	}
+
 	if err != nil {
 		fmt.Println("Error: ", err)
 	}
@@ -43,17 +35,3 @@ func check(testBytes []byte) []byte {
 	return out.Bytes()
 
 }
-
-func chunkPool(c chan []byte) {
-	msg := <-c
-	fmt.Println(msg)
-}
-
-//func worker(c chan []byte) {
-//	for {
-//		msg := <-c
-//		fmt.Println(msg)
-//		break
-//		//		time.Sleep(time.Second * 1)
-//	}
-//}
